@@ -127,7 +127,6 @@ Independent QA uses `kind: test` tasks.
 pap2/
 ├── README.md
 ├── SKILL.md
-├── cron_config.py              # Shared LLM config for standalone operation
 ├── references/
 │   ├── command-behavior.md
 │   ├── cron-run-template.md
@@ -138,13 +137,12 @@ pap2/
 │   ├── start-stop-plumbing.md
 │   └── state-schema.md
 ├── scripts/
-│   ├── build_cron_job.py
+│   ├── pap2.py              # Canonical helper CLI
 │   ├── build_cron_prompt.py
+│   ├── build_cron_job.py
 │   ├── build_start_manifest.py
-│   ├── build_stop_manifest.py
-│   ├── pap.py
-│   └── pap2.py
-└── specialists/               # Bundled specialist profiles for each phase
+│   └── build_stop_manifest.py
+└── specialists/              # Bundled specialist profiles
     ├── product-manager.md
     ├── software-architect.md
     ├── project-manager-senior.md
