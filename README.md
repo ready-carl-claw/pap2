@@ -160,6 +160,7 @@ Deterministic helper for local PAP2 state and file operations.
 
 Supports operations like:
 - `init`
+- `migrate`
 - `validate-project`
 - `status`
 - `steer`

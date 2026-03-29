@@ -42,4 +42,6 @@ Summary rule:
 Before exiting:
 - Persist the next run type when needed
 - Use `python3 scripts/pap2.py finish-run ...` to clear runtime flags, update counters, and append summary.md
+- **CRITICAL SAFETY RULE**: If you are blocked on user feedback, blocked on an external issue, or find no meaningful tasks to work on, you MUST pass `--idle` to the `finish-run` command. After 10 consecutive idle cycles, PAP2 will shut down autopilot to prevent token burn.
+- If `finish-run` outputs `"instruction": "CRON_MUST_SHUTDOWN"`, you MUST disable your own cron job via the OpenClaw `cron` tool (`action="update"`, `jobId` from the `cronJobId` field in `.pap.json`, `patch={"enabled": false}`), then exit.
 ```
