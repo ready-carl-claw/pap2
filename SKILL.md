@@ -31,6 +31,7 @@ Folder convention:
 
 Support this user-facing surface:
 - `/pap2 init <project name>`
+- `/pap2 migrate <project name>` — migrate from legacy [PAP] folder
 - `/pap2 start`
 - `/pap2 stop`
 - `/pap2 status`
