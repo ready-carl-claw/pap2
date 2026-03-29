@@ -126,12 +126,27 @@ Ask for that preference during `/pap2 init`.
 
 ## Helper scripts
 
-Use these deterministic helpers:
+All helper scripts are bundled inside the skill:
 - `scripts/pap2.py` — init, validate/status, task queue mutation, steer, mark steer done, acquire/finish runs, runtime state changes, and structured append helpers for progress/lessons/summary
 - `scripts/build_cron_prompt.py` — render cron prompt template
 - `scripts/build_cron_job.py` — build the OpenClaw cron payload
 - `scripts/build_start_manifest.py` — generate the desired start/channel/cron/runtime plan from project state
 - `scripts/build_stop_manifest.py` — generate the desired stop/disable/preserve-runtime plan from project state
+- `cron_config.py` — shared LLM model config for cron jobs (bundled for standalone operation)
+
+## Bundled specialists
+
+The skill bundles the specialist profiles it needs for each phase. These live in `specialists/`:
+
+| Phase | Specialist |
+|-------|------------|
+| PRD | `product-manager.md` |
+| Design | `software-architect.md` |
+| Planning | `project-manager-senior.md` |
+| Build | `frontend-developer.md`, `backend-architect.md`, `rapid-prototyper.md` |
+| QA | `evidence-collector.md`, `reality-checker.md` |
+
+Read the relevant specialist file when executing that phase.
 
 ## References
 
