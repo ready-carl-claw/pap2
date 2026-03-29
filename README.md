@@ -1,14 +1,10 @@
 # pap2
 
-PAP2 is a second-generation **Project Auto Pilot** implemented as an OpenClaw skill package.
+A standalone **autonomous project orchestrator** skill with phase-driven execution.
 
-It is designed as a **side-by-side successor** to the original `pap` workflow, not an in-place replacement. The goal is to let Carl compare a more structured, phase-driven autonomous project loop against the legacy PAP model.
+## What pap2 is
 
-## What PAP2 is
-
-PAP2 is currently best understood as an **advanced operational skill** with plugin-like architecture.
-
-It provides:
+A self-contained PAP (Project Auto Pilot) workflow that provides:
 - a stricter phase model
 - deterministic helper scripts
 - structured project files
@@ -16,7 +12,7 @@ It provides:
 - steering-first autonomous execution
 - stronger Build / QA / redesign separation
 
-It does **not** modify the original `pap` skill.
+It does **not** depend on any other skill.
 
 ## Core idea
 
@@ -220,24 +216,15 @@ See:
 
 ## Current status
 
-PAP2 is already substantial enough to be used as a serious prototype, but it is still evolving.
+Ready for standalone use. Contains:
+- phase-driven execution model (PRD -> Design -> Planning -> Build -> QA)
+- deterministic helper scripts
+- bundled specialist profiles
+- explicit runtime model with tick scheduler
+- structured TODO task model
+- OpenClaw cron integration
 
-Current maturity:
-- strong local helper surface
-- explicit runtime model
-- explicit task model
-- packaged as a standalone skill
-- still relies on OpenClaw tool orchestration for live external actions
-
-So today it is:
-- **implemented as a skill**
-- **architecturally drifting toward a plugin**
-
-## Relationship to legacy PAP
-
-PAP2 exists specifically so it can be compared against legacy PAP without modifying the original skill.
-
-Legacy `pap` remains untouched.
+Does not depend on any other skill.
 
 ## Packaging
 

@@ -1,12 +1,11 @@
 ---
 name: pap2
-description: Create, retrofit, and operate a second-generation Project Auto Pilot workflow via /pap2 commands, separate from the existing /pap skill. Use when Carl wants to scaffold or run a PAP v2 project with PRD.md, Spec.md, Plan.md, structured TODO.md YAML blocks, Lessons.md, summary.md, steering-first cron behavior, explicit run types (build|qa|plan|design), and a 2-minute tick scheduler without modifying the original pap skill.
+description: Standalone autonomous project orchestrator skill. Use when you need a self-contained PAP (Project Auto Pilot) workflow with PRD.md, Spec.md, Plan.md, structured TODO.md YAML blocks, Lessons.md, summary.md, steering-first cron behavior, explicit run types (build|qa|plan|design), and a 2-minute tick scheduler. Implements phase-driven execution (PRD -> Design -> Planning -> Build -> QA) with deterministic helpers and bundled specialist profiles.
 ---
 
 # PAP2
 
-Build and operate PAP2 as a separate skill from the existing `project-auto-pilot` skill.
-Do not modify or route through `/pap` when the user asks for `pap2`.
+A standalone autonomous project orchestrator skill with phase-driven execution.
 
 ## Core contract
 
@@ -26,7 +25,7 @@ Canonical files:
 
 Folder convention:
 - working directory: `<session-base>/[PAP2]<project name>/`
-- keep PAP2 projects separate from legacy PAP folders
+- projects are self-contained in their own folder
 
 ## Command surface
 
@@ -132,7 +131,6 @@ All helper scripts are bundled inside the skill:
 - `scripts/build_cron_job.py` — build the OpenClaw cron payload
 - `scripts/build_start_manifest.py` — generate the desired start/channel/cron/runtime plan from project state
 - `scripts/build_stop_manifest.py` — generate the desired stop/disable/preserve-runtime plan from project state
-- `cron_config.py` — shared LLM model config for cron jobs (bundled for standalone operation)
 
 ## Bundled specialists
 
@@ -162,7 +160,6 @@ Read these as needed:
 
 ## Quality bar
 
-Keep PAP2 separate from legacy PAP.
 Prefer deterministic file/state transitions over vague prose.
 Do not start autopilot on inconsistent docs.
 Keep user-facing summaries readable and short.
