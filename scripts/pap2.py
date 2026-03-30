@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import re
 import uuid
@@ -949,6 +950,15 @@ def maybe_recover_stale_run(state: dict[str, Any]) -> bool:
     return True
 
 
+def get_file_hashes(project_root: Path) -> dict[str, str]:
+    hashes = {}
+    for filename in ["PRD.md", "Spec.md", "Plan.md", "TODO.md", "progress.md", "Lessons.md", "User-Steer.md"]:
+        p = project_root / filename
+        if p.exists():
+            hashes[filename] = hashlib.md5(p.read_bytes()).hexdigest()
+    return hashes
+
+
 def cmd_acquire_run(args: argparse.Namespace) -> int:
     project_root = Path(args.project_root).expanduser().resolve()
     state = load_state(project_root)
@@ -977,6 +987,21 @@ def cmd_acquire_run(args: argparse.Namespace) -> int:
             "state": state,
         })
         return 0
+
+    # Optimization: if the previous run was idle, and no control plane files have changed,
+    # skip this run immediately to save tokens.
+    if state.get("consecutiveIdleRuns", 0) > 0:
+        current_hashes = get_file_hashes(project_root)
+        last_hashes = state.get("lastFileHashes", {})
+        if current_hashes == last_hashes:
+            print_json({
+                "projectRoot": str(project_root),
+                "acquired": False,
+                "skipped": True,
+                "reason": "idle-and-unchanged",
+                "state": state,
+            })
+            return 0
 
     run_id = args.run_id or f"run_{uuid.uuid4().hex[:12]}"
     state["runInProgress"] = True
@@ -1282,6 +1307,8 @@ def cmd_finish_run(args: argparse.Namespace) -> int:
     if state["consecutiveIdleRuns"] >= 10:
         state["autopilotEnabled"] = False
         instruction = "CRON_MUST_SHUTDOWN"
+
+    state["lastFileHashes"] = get_file_hashes(project_root)
 
     save_state(project_root, state)
 

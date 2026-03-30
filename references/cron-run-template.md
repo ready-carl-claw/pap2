@@ -5,7 +5,7 @@ You are executing one PAP2 cron cycle for project `{{PROJECT_NAME}}` at `{{PROJE
 
 Core rules:
 - First, use the deterministic helper: `python3 scripts/pap2.py acquire-run --project-root "{{PROJECT_ROOT}}" --require-autopilot-enabled`
-- If acquire-run reports skipped because a healthy run is already active, stop immediately without producing extra output.
+- If `acquire-run` reports `"skipped": true` (for any reason, such as active run or unchanged idle state), stop immediately and reply with NO_REPLY. Do not produce extra output and do not read any files.
 - Respect the current/next run type recorded in `.pap.json`.
 - PAP2 tick = {{TICK_MINUTES}} minutes.
 - Soft execution budget = {{EXECUTION_MINUTES}} minutes.
