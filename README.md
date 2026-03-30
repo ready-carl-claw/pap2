@@ -149,6 +149,7 @@ pap2/
     ├── frontend-developer.md
     ├── backend-architect.md
     ├── rapid-prototyper.md
+    ├── cv-ml-researcher.md
     ├── evidence-collector.md
     └── reality-checker.md
 ```

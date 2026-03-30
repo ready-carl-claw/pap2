@@ -142,7 +142,7 @@ The skill bundles the specialist profiles it needs for each phase. These live in
 | PRD | `product-manager.md` |
 | Design | `software-architect.md` |
 | Planning | `project-manager-senior.md` |
-| Build | `frontend-developer.md`, `backend-architect.md`, `rapid-prototyper.md` |
+| Build | `frontend-developer.md`, `backend-architect.md`, `rapid-prototyper.md`, `cv-ml-researcher.md` |
 | QA | `evidence-collector.md`, `reality-checker.md` |
 
 Read the relevant specialist file when executing that phase.
