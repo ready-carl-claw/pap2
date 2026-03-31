@@ -263,8 +263,19 @@ python3 scripts/pap2.py acquire-run \
 
 Behavior:
 - if no healthy active run exists, mark the run active and return acquired state
-- if an active run exists but is stale, recover and acquire a fresh run
+- if an active run exists but is stale (no recent heartbeat), recover and acquire a fresh run
 - if a healthy active run exists, return skipped state so cron can silently exit
+- creates `.pap.heartbeat`
+
+### Update heartbeat
+
+```bash
+python3 scripts/pap2.py heartbeat \
+  --project-root "/abs/path/to/[PAP2]Project Name"
+```
+
+Behavior:
+- updates `.pap.heartbeat` timestamp so long-running scripts aren't mistakenly cancelled as stale runs.
 
 ### Finish a run
 

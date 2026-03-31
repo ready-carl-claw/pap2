@@ -127,7 +127,7 @@ Ask for that preference during `/pap2 init`.
 ## Helper scripts
 
 All helper scripts are bundled inside the skill:
-- `scripts/pap2.py` — init, validate/status, task queue mutation, steer, mark steer done, acquire/finish runs, runtime state changes, and structured append helpers for progress/lessons/summary
+- `scripts/pap2.py` — init, validate/status, task queue mutation, steer, mark steer done, acquire/finish runs, heartbeat, runtime state changes, and structured append helpers for progress/lessons/summary
 - `scripts/build_cron_prompt.py` — render cron prompt template
 - `scripts/build_cron_job.py` — build the OpenClaw cron payload
 - `scripts/build_start_manifest.py` — generate the desired start/channel/cron/runtime plan from project state

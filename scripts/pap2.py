@@ -933,14 +933,27 @@ def cmd_set_runtime(args: argparse.Namespace) -> int:
     return 0
 
 
-def maybe_recover_stale_run(state: dict[str, Any]) -> bool:
+def maybe_recover_stale_run(project_root: Path, state: dict[str, Any]) -> bool:
     if not state.get("runInProgress"):
         return False
+    threshold = float(state.get("staleRunThresholdMinutes", 16) or 16)
+
+    heartbeat_path = project_root / ".pap.heartbeat"
+    if heartbeat_path.exists():
+        try:
+            hb_time = parse_iso_utc(heartbeat_path.read_text(encoding="utf-8").strip())
+            if hb_time is not None:
+                hb_age = minutes_between(hb_time)
+                if hb_age is not None and hb_age <= threshold:
+                    return False
+        except Exception:
+            pass
+
     started = parse_iso_utc(state.get("activeRunStartedAt"))
     age = minutes_between(started)
-    threshold = float(state.get("staleRunThresholdMinutes", 16) or 16)
     if age is None or age <= threshold:
         return False
+        
     state["runInProgress"] = False
     state["activeRunId"] = None
     state["activeRunStartedAt"] = None
@@ -973,7 +986,7 @@ def cmd_acquire_run(args: argparse.Namespace) -> int:
         })
         return 0
 
-    stale_recovered = maybe_recover_stale_run(state)
+    stale_recovered = maybe_recover_stale_run(project_root, state)
 
     if state.get("runInProgress"):
         started = parse_iso_utc(state.get("activeRunStartedAt"))
@@ -1010,6 +1023,9 @@ def cmd_acquire_run(args: argparse.Namespace) -> int:
     state["activeRunTickBudget"] = int(state.get("runBudgetTicks", 4) or 4)
     state["currentRunType"] = state.get("nextRunType") or state.get("currentRunType") or "build"
     save_state(project_root, state)
+    
+    (project_root / ".pap.heartbeat").write_text(now_utc_iso(), encoding="utf-8")
+    
     print_json({
         "projectRoot": str(project_root),
         "acquired": True,
@@ -1329,7 +1345,27 @@ def cmd_finish_run(args: argparse.Namespace) -> int:
     if instruction:
         out_data["instruction"] = instruction
 
+    heartbeat_path = project_root / ".pap.heartbeat"
+    if heartbeat_path.exists():
+        try:
+            heartbeat_path.unlink()
+        except OSError:
+            pass
+
     print_json(out_data)
+    return 0
+
+
+def cmd_heartbeat(args: argparse.Namespace) -> int:
+    project_root = Path(args.project_root).expanduser().resolve()
+    state = load_state(project_root)
+    if not state.get("runInProgress"):
+        print_json({"projectRoot": str(project_root), "updated": False, "reason": "no-active-run"})
+        return 0
+
+    heartbeat_path = project_root / ".pap.heartbeat"
+    heartbeat_path.write_text(now_utc_iso(), encoding="utf-8")
+    print_json({"projectRoot": str(project_root), "updated": True, "file": str(heartbeat_path)})
     return 0
 
 
@@ -1351,6 +1387,14 @@ def cmd_clear_runtime(args: argparse.Namespace) -> int:
     state["activeRunId"] = None
     state["activeRunStartedAt"] = None
     save_state(project_root, state)
+    
+    heartbeat_path = project_root / ".pap.heartbeat"
+    if heartbeat_path.exists():
+        try:
+            heartbeat_path.unlink()
+        except OSError:
+            pass
+
     print_json(state)
     return 0
 
@@ -1491,6 +1535,10 @@ def build_parser() -> argparse.ArgumentParser:
     acquire_p.add_argument("--run-id")
     acquire_p.add_argument("--require-autopilot-enabled", action="store_true")
     acquire_p.set_defaults(func=cmd_acquire_run)
+
+    heartbeat_p = sub.add_parser("heartbeat", help="Update the heartbeat timestamp to prevent stale recovery")
+    heartbeat_p.add_argument("--project-root", required=True)
+    heartbeat_p.set_defaults(func=cmd_heartbeat)
 
     finish_p = sub.add_parser("finish-run", help="Finish a PAP2 run, clear runtime flags, append summary, and persist routing")
     finish_p.add_argument("--project-root", required=True)
